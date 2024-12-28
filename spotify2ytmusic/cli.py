@@ -342,5 +342,6 @@ def ytoauth():
     """
     from ytmusicapi.setup import main
 
-    sys.argv = ["ytmusicapi", "oauth"]
+    print("wth")
+    sys.argv = ["ytmusicapi", "browser"]
     sys.exit(main())

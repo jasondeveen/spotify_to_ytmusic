@@ -5,8 +5,9 @@ import sys
 import os
 import time
 import re
+import pathlib
 
-from ytmusicapi import YTMusic
+from ytmusicapi import YTMusic, setup
 from typing import Optional, Union, Iterator, Dict, List
 from collections import namedtuple
 from dataclasses import dataclass, field
@@ -22,7 +23,9 @@ def get_ytmusic() -> YTMusic:
     if not os.path.exists("browser.json"):
         print("ERROR: No file 'browser.json' exists in the current directory.")
         print("       Have you logged in to YTMusic?  Run 'ytmusicapi browser' to login")
-        sys.exit(1)
+        filepath = pathlib.Path('browser.json').resolve()
+        print(filepath)
+        setup(filepath=filepath)
 
     try:
         return YTMusic("browser.json")
