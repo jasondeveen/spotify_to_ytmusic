@@ -404,7 +404,7 @@ def copier(
         tracks_added_set.add(dst_track["videoId"])
 
         if not dry_run:
-            exception_sleep = 5
+            exception_sleep = 30
             for _ in range(10):
                 try:
                     if dst_pl_id is not None:
@@ -421,7 +421,6 @@ def copier(
                         f"ERROR: (Retrying add_playlist_items: {dst_pl_id} {dst_track['videoId']}) {e} in {exception_sleep} seconds"
                     )
                     time.sleep(exception_sleep)
-                    exception_sleep *= 2
 
         if track_sleep:
             time.sleep(track_sleep)
