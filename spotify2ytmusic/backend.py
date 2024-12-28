@@ -14,6 +14,7 @@ from dataclasses import dataclass, field
 
 
 SongInfo = namedtuple("SongInfo", ["title", "artist", "album"])
+filepath = pathlib.Path('browser.json').resolve()
 
 
 def get_ytmusic() -> YTMusic:
@@ -23,7 +24,6 @@ def get_ytmusic() -> YTMusic:
     if not os.path.exists("browser.json"):
         print("ERROR: No file 'browser.json' exists in the current directory.")
         print("       Have you logged in to YTMusic?  Run 'ytmusicapi browser' to login")
-        filepath = pathlib.Path('browser.json').resolve()
         print(filepath)
         setup(filepath=filepath)
 
