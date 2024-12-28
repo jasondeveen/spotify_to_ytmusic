@@ -417,6 +417,13 @@ def copier(
                         yt.rate_song(dst_track["videoId"], "LIKE")
                     break
                 except Exception as e:
+                    print("Retry login to youtube music")
+                    
+                    if os.path.exists(filepath):
+                        print("Removing browser.json")
+                        os.remove(filepath)
+                    
+                    yt = get_ytmusic()
                     print(
                         f"ERROR: (Retrying add_playlist_items: {dst_pl_id} {dst_track['videoId']}) {e} in {exception_sleep} seconds"
                     )
