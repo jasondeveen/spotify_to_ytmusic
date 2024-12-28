@@ -5,31 +5,35 @@ import sys
 import os
 import time
 import re
+import pathlib
+import winsound
 
-from ytmusicapi import YTMusic
+from ytmusicapi import YTMusic, setup
 from typing import Optional, Union, Iterator, Dict, List
 from collections import namedtuple
 from dataclasses import dataclass, field
 
 
 SongInfo = namedtuple("SongInfo", ["title", "artist", "album"])
+filepath = pathlib.Path('browser.json').resolve()
 
 
 def get_ytmusic() -> YTMusic:
     """
     @@@
     """
-    if not os.path.exists("oauth.json"):
-        print("ERROR: No file 'oauth.json' exists in the current directory.")
-        print("       Have you logged in to YTMusic?  Run 'ytmusicapi oauth' to login")
-        sys.exit(1)
+    if not os.path.exists("browser.json"):
+        print("ERROR: No file 'browser.json' exists in the current directory.")
+        print("       Have you logged in to YTMusic?  Run 'ytmusicapi browser' to login")
+        print(filepath)
+        setup(filepath=filepath)
 
     try:
-        return YTMusic("oauth.json")
+        return YTMusic("browser.json")
     except json.decoder.JSONDecodeError as e:
         print(f"ERROR: JSON Decode error while trying start YTMusic: {e}")
-        print("       This typically means a problem with a 'oauth.json' file.")
-        print("       Have you logged in to YTMusic?  Run 'ytmusicapi oauth' to login")
+        print("       This typically means a problem with a 'browser.json' file.")
+        print("       Have you logged in to YTMusic?  Run 'ytmusicapi browser' to login")
         sys.exit(1)
 
 
@@ -376,7 +380,8 @@ def copier(
     duplicate_count = 0
     error_count = 0
 
-    for src_track in src_tracks:
+    for count,src_track in enumerate(src_tracks):
+        print(f"--Track {count}/{len(src_tracks)}--")
         print(f"Spotify:   {src_track.title} - {src_track.artist} - {src_track.album}")
 
         try:
@@ -401,7 +406,7 @@ def copier(
         tracks_added_set.add(dst_track["videoId"])
 
         if not dry_run:
-            exception_sleep = 5
+            exception_sleep = 30
             for _ in range(10):
                 try:
                     if dst_pl_id is not None:
@@ -414,11 +419,20 @@ def copier(
                         yt.rate_song(dst_track["videoId"], "LIKE")
                     break
                 except Exception as e:
+                    print("Retry login to youtube music")
+                    duration = 1000  # milliseconds
+                    freq = 440  # Hz
+                    winsound.Beep(freq, duration)
+                    
+                    if os.path.exists(filepath):
+                        print("Removing browser.json")
+                        os.remove(filepath)
+                    
+                    yt = get_ytmusic()
                     print(
                         f"ERROR: (Retrying add_playlist_items: {dst_pl_id} {dst_track['videoId']}) {e} in {exception_sleep} seconds"
                     )
                     time.sleep(exception_sleep)
-                    exception_sleep *= 2
 
         if track_sleep:
             time.sleep(track_sleep)
