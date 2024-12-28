@@ -6,6 +6,7 @@ import os
 import time
 import re
 import pathlib
+import winsound
 
 from ytmusicapi import YTMusic, setup
 from typing import Optional, Union, Iterator, Dict, List
@@ -419,6 +420,9 @@ def copier(
                     break
                 except Exception as e:
                     print("Retry login to youtube music")
+                    duration = 1000  # milliseconds
+                    freq = 440  # Hz
+                    winsound.Beep(freq, duration)
                     
                     if os.path.exists(filepath):
                         print("Removing browser.json")
