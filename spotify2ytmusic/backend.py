@@ -379,7 +379,8 @@ def copier(
     duplicate_count = 0
     error_count = 0
 
-    for src_track in src_tracks:
+    for count,src_track in enumerate(src_tracks):
+        print(f"--Track {count}/{len(src_tracks)}--")
         print(f"Spotify:   {src_track.title} - {src_track.artist} - {src_track.album}")
 
         try:
